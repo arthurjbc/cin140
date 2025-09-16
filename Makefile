@@ -1,0 +1,23 @@
+OUT="out"
+SRC=selectionSort
+
+all:
+	g++ $(SRC).cpp -o $(SRC)
+
+selection:
+	g++ selectionSort.cpp -o selection.out
+
+bubble:
+	g++ bubbleSort.cpp -o bubble.out
+
+insertion:
+	g++ insertionSort.cpp -o insertion.out
+
+quick:
+	g++ quickSort.cpp -o quick.out
+
+binary:
+	g++ binarySearch.cpp -o binary.out
+
+clean:
+	rm -f *.out
