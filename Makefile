@@ -1,9 +1,3 @@
-OUT="out"
-SRC=selectionSort
-
-all:
-	g++ $(SRC).cpp -o $(SRC)
-
 selection:
 	g++ selectionSort.cpp -o selection.out
 
