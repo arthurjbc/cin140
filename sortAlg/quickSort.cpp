@@ -51,6 +51,8 @@ void algoritmo(int a[], int left, int right){
 
 
 int main(){
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
     int n, left ,right;
     while(1){ 
         std::cin >> n;  

@@ -1,5 +1,6 @@
 #include <iostream>
-#include <cmath>
+
+using namespace std;
 
 void entrada(int a[], int n){
     int ent;
@@ -13,9 +14,10 @@ int algoritmo(int a[], int n, int buscado){
     int l = 0;
     int r = n-1;
     while (l<=r){
-        int m = floor((l+r)/2);
+        int m = (l+r)/2;
         if (buscado == a[m]){
-            std::cout << "achei" << std::endl;
+            std::cout << m << std::endl;
+            cout << n-m-1 << endl;
             return m;
         } else if (buscado < a[m]){
             r = m-1;
@@ -23,12 +25,14 @@ int algoritmo(int a[], int n, int buscado){
             l = m+1;
         }
     }
-    std::cout << "nao achei" << std::endl;
+    std::cout << -1 << std::endl;
     return -1;
 }
 
 
 int main(){
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
     int n;
     int buscado;
     while(1){ 

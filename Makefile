@@ -13,5 +13,8 @@ quick:
 binary:
 	g++ binarySearch.cpp -o binary.out
 
+merge:
+	g++ mergeSort.cpp -o merge.out
+
 clean:
 	rm -f *.out
