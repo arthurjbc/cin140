@@ -1,0 +1,161 @@
+struct BSTnode {
+    int val;
+    BSTnode* right;
+    BSTnode* left;
+    int height;
+    bool repete;
+    BSTnode(int val){
+        this->val = val;
+        left = nullptr;
+        right = nullptr;
+        height = 0;
+        repete = false;
+    }
+};
+
+class AVL {
+private:
+        BSTnode* root;
+        int size;
+    public:
+
+        void freeR (BSTnode* rt){
+            if (rt == nullptr) return;
+            else{
+                freeR(rt->left);
+                freeR(rt->right);
+                delete rt;
+            }
+        }
+
+        AVL() {
+            root = nullptr;
+            size = 0;
+        }
+
+        ~AVL(){
+            freeR(root);
+            root = nullptr;
+        }
+
+        BSTnode* getRoot(){
+            return root;
+        }
+
+        int height (BSTnode* rt){
+            if (rt == nullptr){
+                return -1;
+            }
+            return rt->height;
+        }
+
+        BSTnode* leftRotate(BSTnode* rt){
+            BSTnode* r = rt->right;
+            BSTnode* rl = r->left;
+
+            r->left = rt;
+            rt->right = rl;
+
+            rt->height = max(height(rt->left), height(rt->right)) + 1;
+            r->height = max(height(r->left), height(r->right)) + 1;
+
+            return r;
+        }
+
+        BSTnode* rightRotate(BSTnode* rt){
+            BSTnode* l = rt->left;
+            BSTnode* lr = l->right;
+
+            l->right = rt;
+            rt->left = lr;
+
+            rt->height = max(height(rt->left), height(rt->right)) + 1;
+            l->height = max(height(l->left), height(l->right)) + 1;
+
+            return l;
+        }
+
+
+        int getBalance(BSTnode* rt){
+            if (rt == nullptr) return 0;
+            return height(rt->left) - height(rt->right);
+        }
+
+        void printIn(BSTnode* rt){
+            if (rt == nullptr) return;
+            else {
+                printIn(rt->left);
+                cout << "(" << rt->val << ") "; 
+                printIn(rt->right);
+            }
+        }
+
+        void printPos(BSTnode* rt){
+            if (rt == nullptr) return;
+            else {
+                printPos(rt->left);
+                printPos(rt->right);
+                cout << "(" << rt->val << ") ";
+            }
+        }
+
+        void printPre(BSTnode* rt){
+            if (rt == nullptr) return;
+            else {
+                cout << "(" << rt->val << ") ";
+                printPre(rt->left);
+                printPre(rt->right);
+            }
+        }
+
+        BSTnode* insertH(BSTnode* rt, int v) {
+            if (rt == nullptr) {
+                size++;
+                return new BSTnode(v);
+            }
+            
+            if (v < rt->val) {
+                rt->left = insertH(rt->left, v);
+            } else if (v > rt->val) {
+                rt->right = insertH(rt->right, v);
+            } else {
+                rt->repete = true;
+            }
+
+            rt->height = 1 + max(height(rt->left), height(rt->right));
+
+            int balance = getBalance(rt);
+            
+            if (balance < -1 && v >= rt->right->val) return leftRotate(rt); //R
+            
+            if (balance > 1 && v < rt->left->val) return rightRotate(rt); //L
+
+            if (balance > 1 && v >= rt->left->val) {    //RL
+                rt->left = leftRotate(rt->left);
+                return rightRotate(rt); 
+            }
+
+            if (balance < -1 && v < rt->right->val) {    //LR
+                rt->right = rightRotate(rt->right);
+                return leftRotate(rt);
+            }
+
+            return rt;
+        }
+
+        void insert(int v) {
+            root = insertH(root, v);
+        }
+
+        int procura(BSTnode* rt){
+            if (rt->left == nullptr){
+                return -1;
+            } else if (rt->repete == false){
+                return rt->val;
+            } else {
+                BSTnode* cur = rt->left;
+                return procura (cur);
+            }
+        }
+    };
+\
