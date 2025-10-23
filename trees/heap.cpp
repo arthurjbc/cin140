@@ -12,7 +12,27 @@ void swap (int& a, int&b){
     b=temp;
 }
 
-void bottomUp(vector<int>& a, int& n){
+void heapifyUpMax(vector<int>& a, int& n, int k){
+        int v = a[k];
+        bool heap = false;
+
+        while ((!heap && 2*k<=n)){
+            int j=2*k; // vai ao filho à esquerda
+
+            if ((j<n) && (a[j]<a[j+1])) j++;    // vai ao filho maior ou fica à esquerda
+
+            if (v>=a[j]) heap=true; // se o maior filho for menor que ele, a heap está satisfeita
+
+            else {
+                a[k] = a[j]; // troque o valor dos nós
+                k=j;
+            }
+        }
+
+        a[k] = v;
+}
+
+void bottomUpMax(vector<int>& a, int& n){
     for (int i = n/2; i>=1; i--){
         int k = i;
         int v = a[k];
@@ -21,9 +41,9 @@ void bottomUp(vector<int>& a, int& n){
         while ((!heap && 2*k<=n)){
             int j=2*k; // vai ao filho à esquerda
 
-            if ((j<n) && (a[j]>a[j+1])) j++;    // vai ao filho maior ou fica à esquerda
+            if ((j<n) && (a[j]<a[j+1])) j++;    // vai ao filho maior ou fica à esquerda
 
-            if (v<=a[j]) heap=true; // se o maior filho for menor que ele, a heap está satisfeita
+            if (v>=a[j]) heap=true; // se o maior filho for menor que ele, a heap está satisfeita
 
             else {
                 a[k] = a[j]; // troque o valor dos nós
@@ -44,9 +64,10 @@ void print(vector<int>& a, int n){
 
 void heapsort(vector<int>& a, int& n){
     int dir = n;
+    bottomUpMax(a, --dir);
     while(dir > 0){
         swap(a[1], a[dir]);
-        bottomUp(a, --dir);
+        heapifyUpMax(a, --dir, 1);
     }
 }
 
@@ -61,10 +82,6 @@ int main(){
     for (int i=1; i<n; i++){
         cin >> a[i];
     }
-
-    print(a, n);
-
-    bottomUp(a, n);
 
     print(a, n);
 
