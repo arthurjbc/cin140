@@ -2,6 +2,7 @@
 #include <vector>
 #include <algorithm>
 #include <numeric>
+#include <queue>
 
 using namespace std;
 
@@ -9,6 +10,7 @@ using namespace std;
 #define fio ios_base::sync_with_stdio(false); cin.tie(0);
 #define forn(i, j ,n) for(int i=j; i<n; i++)
 using ll = long long;
+using pii = pair<ll, int>;
 
 int findD(int v, vector<int>& parent) {
     if (v == parent[v]) return v;
@@ -32,12 +34,11 @@ bool uniond(int a, int b, vector<int>& parent, vector<int>& ranking) {
 void solve() {
     int n, m; cin >> n >> m;
 
-    vector<vector<int>> g;
+    priority_queue<pair<int, pair<int, int>>> g;
     forn(k, 0, m) {
         int i, j, p; cin >> i >> j >> p;
-        g.push_back({p, i, j});
+        g.push({-p, {i, j}});
     }
-    sort(g.begin(), g.end());
 
     vector<int> parent(n);
     forn(i, 0, n) parent[i] = i;
@@ -47,21 +48,23 @@ void solve() {
     ll mstP = 0; 
     int edgecnt = 0;
 
-    for (const auto& w : g) {
-        int cost = w[0];
-        int u = w[1];
-        int v = w[2];
+    while(n>1) {
+        pair<int, pair<int, int>> w = g.top();
+        g.pop();
+        int cost = w.first;
+        pair<int, int> par = w.second;
+        int u = par.first;
+        int v = par.second;
         
         if (findD(u, parent) != findD(v, parent)) {
             mstP += cost;
             uniond(u, v, parent, ranking);
             edgecnt++;
-            
-            if (edgecnt == n - 1) break;
+            n--;
         }
     }
 
-    cout << mstP << el;
+    cout << -mstP << el;
 }
 
 int main() {
