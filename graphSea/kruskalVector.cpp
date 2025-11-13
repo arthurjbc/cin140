@@ -1,66 +1,72 @@
-#include <vector>
-#include <queue>
-#include <stack>
 #include <iostream>
-#include <utility>
-#include <limits>
+#include <vector>
+#include <algorithm>
+#include <numeric>
+#include <queue>
 
 using namespace std;
 
-#define forn(i, j ,n) for(int i=j; i<n; i++)
 #define el "\n"
 #define fio ios_base::sync_with_stdio(false); cin.tie(0);
+#define forn(i, j ,n) for(int i=j; i<n; i++)
 using ll = long long;
 using pii = pair<ll, int>;
 
+int findD(int v, vector<int>& parent) {
+    if (v == parent[v]) return v;
+    return parent[v] = findD(parent[v], parent);
+}
+bool uniond(int a, int b, vector<int>& parent, vector<int>& ranking) {
+    a = findD(a, parent);
+    b = findD(b, parent);
 
-void dijkstra(vector<bool>& visited, const vector<vector<pair<int, int>>>& g, const int& n, const int s){
-    vector<int> parent(n, -1);
-    vector<ll> distance(n, 999);
+    if (a != b) {
+        if (ranking[a] < ranking[b])
+            swap(a, b);
+        parent[b] = a;
+        if (ranking[a] == ranking[b])
+            ranking[a]++;
+        return true;
+    }
+    return false; 
+}
 
-    distance[s] = 0;
-    priority_queue<pii, vector<pii>, greater<pii>> pq;
-    pq.push({0, s});
+void solve() {
+    int n, m; cin >> n >> m;
 
-    int v, pes, w;
-    ll p;
-    ll mstP = 0;
-    while(!pq.empty()){
-        ll dv = pq.top().first;
-        v = pq.top().second;
-        pq.pop();
+    vector<vector<int>> g;
+    forn(k, 0, m) {
+        int i, j, p; cin >> i >> j >> p;
+        g.push_back({p, i, j});
+    }
 
-        if (dv > distance[v]) continue;
-        if(visited[v]) continue;
+    sort(g.begin(), g.end());
+    vector<int> parent(n);
+    forn(i, 0, n) parent[i] = i;
+    vector<int> ranking(n, 0);
 
-        visited[v] = true;
-        mstP += dv;
 
-        for(const auto& no : g[v]){
-            int w = no.first;
-            int disvw = no.second;
-            if (!visited[w] && distance[w] > disvw){
-                distance[w] = disvw;
-                parent[w] = v;
-                pq.push({distance[w], w});
-            }
+    ll mstP = 0; 
+    int edgecnt = 0;
+
+    for(const auto& w : g){
+
+        int c = w[0];
+        int u = w[1];
+        int v = w[2];
+        
+        if (findD(u, parent) != findD(v, parent)) {
+            mstP += c;
+            uniond(u, v, parent, ranking);
+            edgecnt++;
+            n--;
         }
     }
+
     cout << mstP << el;
 }
 
-int main(){
-    fio
-    int n, j; cin >> n >> j;
-    vector<bool> visited(n, false);
-    vector<vector<pair<int, int>>> g(n);
-    
-    forn(i, 0, j){
-        int a, b ,c; cin >> a >> b >> c;
-        g[a].push_back({b, c});
-        g[b].push_back({a, c});
-    }
-
-    dijkstra(visited, g, n, 0);
-    return 0;
+int main() {
+    fio 
+    solve();
 }
